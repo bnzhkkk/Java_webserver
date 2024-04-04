@@ -26,7 +26,7 @@ public class SignInServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String login = request.getParameter("login");
-        String password = request.getParameter("password");
+        String password = request.getParameter("passwwod");
 
         response.setContentType("text/html;charset=utf-8");
 
