@@ -22,7 +22,11 @@ public class SignUpServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
-        accountService.singUp(login, password);
+        try {
+            accountService.singUp(login, password);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println("Signed Up");

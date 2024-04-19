@@ -1,27 +1,32 @@
 package accounts;
 
-import java.util.HashMap;
-import java.util.Map;
+import db.DBService;
 
 public class AccountService {
-    private final Map<String, UserProfile> users;
+    private final DBService dbService;
 
-    public AccountService() {
-        users = new HashMap<>();
+    public AccountService(DBService dbService) {
+        this.dbService = dbService;
     }
 
-    public Map<String, UserProfile> getUsers() {
-        return users;
-    }
 
     public void singUp(String login, String password) {
-        users.put(login, new UserProfile(login, password));
+        try {
+            dbService.addUser(new UserProfile(login, password));
+        } catch (Exception e) {
+            System.out.println("Can't sing in: " + e.getMessage());
+        }
+
     }
 
-    public boolean signIn(String login, String pass) {
-        if (users.get(login).getPassword().equals(pass) && users.get(login) != null)
-            return true;
-        else
+    public boolean signIn(String login, String password) {
+        try {
+            UserProfile profile = dbService.getUser(login);
+            return profile != null && profile.getLogin().equals(login) && profile.getPassword().equals(password);
+        } catch (Exception e) {
+            System.out.println("Can't sing in: " + e.getMessage());
             return false;
+        }
+
     }
 }
