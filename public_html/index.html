@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8"/>
-    <title>bnzhkk</title>
-</head>
-<body>
-<form>
-    Login: <label><input type="text" name="login"/></label>
-    Password: <label><input type="password" name="password"/></label>
-    <button formaction="/signup" formmethod="post" type="submit" value="Sign up">Sign up</button>
-    <button formaction="/signin" formmethod="post" type="submit" value="Sign in">Sign in</button>
-</form>
-</body>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>bnzhkk</title>
+    </head>
+
+    <body onload="init();">
+        <textarea id="messages" rows="10" cols="50" readonly="readonly"></textarea>
+        <form name="message" action="">
+            <input name="usermsg" type="text" id="message" size="45"/>
+            <input type="button" name="submitmsg" value="SEND" onclick="sendMessage();"/>
+        </form>
+
+        <script>
+            var webSocket = new WebSocket("ws://localhost:8080/chat");
+
+            webSocket.onopen = function(event) {
+                console.log("WebSocket connection established.");
+            };
+
+            webSocket.onmessage = function(event) {
+                console.log("Message received: " + event.data);
+                var messagesTextArea = document.getElementById("messages");
+                messagesTextArea.value += event.data + "\n";
+            };
+
+            function sendMessage() {
+                var messageInput = document.getElementById("message");
+                var message = messageInput.value;
+                webSocket.send(message);
+                messageInput.value = "";
+            }
+        </script>
+    </body>
 </html>
