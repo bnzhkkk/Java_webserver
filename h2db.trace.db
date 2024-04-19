@@ -1,0 +1,44 @@
+04-19 16:15:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('','') [42102-187]
+04-19 16:16:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+select * from users where login='' [42102-187]
+04-19 16:16:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('','') [42102-187]
+04-19 16:17:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+select * from users where login='' [42102-187]
+04-19 16:46:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('','') [42102-187]
+04-19 16:46:40 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+select * from users where login='' [42102-187]
+04-19 16:46:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('jvdklgd','kjkfdk') [42102-187]
+04-19 16:46:57 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+select * from users where login='jvdklgd' [42102-187]
+04-19 16:57:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+select * from users where login='jvdklgd' [42102-187]
+04-19 16:57:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('jvdklgd','kjkfdk') [42102-187]
+04-19 16:57:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" не найдена
+Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('','') [42102-187]
