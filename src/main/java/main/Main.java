@@ -11,11 +11,11 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import account.Serv;
-import account.ServController;
-import account.ServControllerMBean;
-import account.ServIMPL;
-import servlets.AdminServlet;
+import resourceServ.ResourceServ;
+import resourceServ.ResourceServController;
+import resourceServ.ResourceServControllerMBean;
+import resourceServ.ResourceServerIMPL;
+import servlets.ResourceServlet;
 
 
 public class Main {
@@ -25,17 +25,17 @@ public class Main {
 
         logger.info("Starting at http://127.0.0.1:" + 8080);
 
-        Serv serv = new ServIMPL();
+        ResourceServ resourceServ = new ResourceServerIMPL();
 
-        ServControllerMBean servStatistics = new ServController(serv);
+        ResourceServControllerMBean servStatistics = new ResourceServController(resourceServ);
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("Admin:type=ServController");
+        ObjectName name = new ObjectName("Admin:type=ResourceServController");
         mbs.registerMBean(servStatistics, name);
 
         Server server = new Server(8080);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new AdminServlet(serv)), AdminServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new ResourceServlet(resourceServ)), ResourceServlet.PAGE_URL);
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
@@ -45,19 +45,8 @@ public class Main {
         handlers.setHandlers(new Handler[]{resource_handler, context});
         server.setHandler(handlers);
 
-
         server.start();
         logger.info("Server started");
-        Thread taskThread = new Thread(() -> {
-            try {
-                Thread.sleep(10000);
-                serv.setUsersLimit(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        taskThread.start();
-
         server.join();
     }
 }
