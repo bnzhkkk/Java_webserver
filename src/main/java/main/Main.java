@@ -1,52 +1,57 @@
 package main;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import java.lang.management.ManagementFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import resourceServ.ResourceServ;
-import resourceServ.ResourceServController;
-import resourceServ.ResourceServControllerMBean;
-import resourceServ.ResourceServerIMPL;
-import servlets.ResourceServlet;
-
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class Main {
-    static final Logger logger = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) throws Exception {
+        try (ServerSocket serverSocket = new ServerSocket(5050)) {
+            System.out.println("Server started");
+            while (true) {
+                Socket userSocket = serverSocket.accept();
+                System.out.println("User connected: " + userSocket);
+                SocketThread socketThread = new SocketThread(userSocket);
+                socketThread.start();
+            }
+        }
+    }
 
-        logger.info("Starting at http://127.0.0.1:" + 8080);
+    private static class SocketThread extends Thread {
+        private final Socket userSocket;
 
-        ResourceServ resourceServ = new ResourceServerIMPL();
+        private SocketThread(Socket userSocket) {
+            this.userSocket = userSocket;
+        }
 
-        ResourceServControllerMBean servStatistics = new ResourceServController(resourceServ);
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("Admin:type=ResourceServController");
-        mbs.registerMBean(servStatistics, name);
+        @Override
+        public void run() {
+            System.out.println("Run: " + this.getName());
+            try (
+                    PrintWriter out = new PrintWriter(userSocket.getOutputStream(), true);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(userSocket.getInputStream()))
+            ) {
+                String inputLine;
 
-        Server server = new Server(8080);
+                while ((inputLine = in.readLine()) != null) {
+                    out.println(inputLine);
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new ResourceServlet(resourceServ)), ResourceServlet.PAGE_URL);
+                    if (inputLine.equals("Bye.")) {
+                        break;
+                    }
+                }
 
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("public_html");
+                userSocket.close();
+                System.out.println("Client disconnected: " + userSocket);
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resource_handler, context});
-        server.setHandler(handlers);
-
-        server.start();
-        logger.info("Server started");
-        server.join();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
     }
 }
